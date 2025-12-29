@@ -1,90 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Progate</title>
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>バス時刻表</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3448/3448339.png">
+
+    <style>
+        body { font-family: -apple-system, sans-serif; background-color: #f2f2f7; margin: 0; padding-top: env(safe-area-inset-top); display: flex; justify-content: center; }
+        .card { background: white; width: 100%; max-width: 400px; min-height: 100vh; padding: 20px; box-sizing: border-box; }
+        h1 { font-size: 1.2rem; color: #1c1c1e; margin: 10px 0; }
+        .select-wrapper { position: relative; margin-bottom: 20px; }
+        select {
+            width: 100%; padding: 12px; font-size: 1rem; border-radius: 10px; border: 1px solid #d1d1d6;
+            background-color: #fff; appearance: none; -webkit-appearance: none; font-weight: 600; color: #00479d;
+        }
+        .select-wrapper::after { content: '▼'; position: absolute; right: 15px; top: 15px; font-size: 0.8rem; color: #8e8e93; pointer-events: none; }
+        .bus-list { list-style: none; padding: 0; margin: 0; }
+        .bus-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 0.5px solid #d1d1d6; }
+        .time { font-size: 2.2rem; font-weight: 700; color: #00479d; letter-spacing: -1px; }
+        .countdown { background: #007aff; color: white; padding: 8px 15px; border-radius: 10px; font-size: 1rem; font-weight: 600; }
+        .status { font-size: 0.8rem; color: #8e8e93; margin-top: 30px; text-align: center; }
+        .finished { text-align: center; padding: 40px 0; color: #ff3b30; font-weight: bold; }
+    </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="header-left">
-        <img class="logo" src="https://prog-8.com/images/html/advanced/main_logo.png">
-      </div>
-      <span class="fa fa-bars menu-icon"></span>
-      <div class="header-right">
-        <a href="#">レッスン</a>
-        <a href="#">新規登録</a>
-        <a href="#" class="login">ログイン</a>
-      </div>
-    </div>
-  </header>
-  <div class="top-wrapper">
-    <div class="container">
-      <h1>LEARN TO CODE.<br>LEARN TO BE CREATIVE.</h1>
-      <p>Progateはオンラインプログラミング学習サービスです。<br>初心者にもやさしいスライドとレッスンで、ウェブサービスを作りながらプログラミングを学んでいきましょう。</p>
-      <div class="btn-wrapper">
-        <a href="#" class="btn signup">新規登録はこちら</a>
-        <p>or</p>
-        <a href="#" class="btn facebook"><span class="fa fa-facebook"></span>Facebookで登録</a>
-        <a href="#" class="btn twitter"><span class="fa fa-twitter"></span>Twitterで登録</a>
-      </div>
-    </div>
-  </div>
-  <div class="lesson-wrapper">
-    <div class="container">
-      <div class="heading">
-        <h2>Learn Where to Get Started!</h2>
-      </div>
-      <div class="lessons">
-        <div class="lesson">
-          <div class="lesson-icon">
-            <img src="https://prog-8.com/images/html/advanced/html.png">
-            <p>HTML & CSS</p>
-          </div>
-          <p class="text-contents">ウェブページの作成に使用される言語です。HTMLとCSSを組み合わせることで、静的なページを作り上げることができます。</p>
+
+<div class="card">
+    <div class="header">
+        <h1>下連雀五丁目</h1>
+        <div class="select-wrapper">
+            <select id="destination-select" onchange="updateBusTimes()">
+                <option value="kichijoji">吉13 吉祥寺駅 行き</option>
+                <option value="mitaka">鷹63 三鷹駅 行き</option>
+            </select>
         </div>
-        <div class="lesson">
-          <div class="lesson-icon">
-            <img src="https://prog-8.com/images/html/advanced/jQuery.png">
-            <p>jQuery</p>
-          </div>
-          <p class="text-contents">素敵な動きを手軽に実装できるJavaScriptライブラリです。 アニメーション効果をつけたり、Ajax（エイジャックス）を使って外部ファイルを読み込んだりと色々なことができます。</p>
-        </div>
-        <div class="lesson">
-          <div class="lesson-icon">
-            <img src="https://prog-8.com/images/html/advanced/ruby.png">
-            <p>Ruby</p>
-          </div>
-          <p class="text-contents">オープンソースの動的なプログラミング言語で、 シンプルさと高い生産性を備えています。大きなWebアプリケーションから小さな日用ツールまで、さまざまなソフトウェアを作ることができます。</p>
-        </div>
-        <div class="lesson">
-          <div class="lesson-icon">
-            <img src="https://prog-8.com/images/html/advanced/php.png">
-            <p>PHP</p>
-          </div>
-          <p class="text-contents">HTMLだけではページの内容を変えることはできません。PHPはHTMLにプログラムを埋め込み、それを可能にします。</p>
-        </div>
-      </div>
-      <div class="clear"></div>
     </div>
-  </div>
-  <div class="message-wrapper">
-    <div class="container">
-      <div class="heading">
-        <h2>さぁ、あなたもProgateでプログラミングを学んでみませんか?</h2>
-        <h3>Let's learn to code, learn to be creative!</h3>
-      </div>
-      <span class="btn message">さっそく開発する</span>
-    </div>
-  </div>
-  <footer>
-    <div class="container">
-      <img src="https://prog-8.com/images/html/advanced/footer_logo.png">
-      <p>Learn to Code, Learn to be Creative.</p>
-    </div>
-  </footer>
+    <ul id="bus-display" class="bus-list"></ul>
+    <div id="date-info" class="status"></div>
+</div>
+
+<script>
+const data = {
+    kichijoji: {
+        weekday: ["06:02", "06:19", "06:30", "06:37", "06:43", "06:47", "06:52", "07:00", "07:04", "07:07", "07:12", "07:15", "07:21", "07:26", "07:29", "07:31", "07:36", "07:41", "07:44", "07:46", "07:53", "07:58", "08:02", "08:08", "08:12", "08:21", "08:28", "08:34", "08:38", "08:43", "08:48", "08:53", "09:01", "09:10", "09:21", "09:36", "09:53", "10:08", "10:15", "10:23", "10:29", "10:35", "10:44", "10:54", "11:09", "11:24", "11:39", "11:54", "12:09", "12:23", "12:28", "12:35", "12:47", "12:59", "13:09", "13:24", "13:39", "13:54", "14:09", "14:24", "14:45", "14:50", "14:57", "15:05", "15:24", "15:39", "15:54", "16:09", "16:14", "16:24", "16:29", "16:37", "16:52", "17:09", "17:21", "17:34", "17:46", "18:01", "18:06", "18:13", "18:22", "18:30", "18:39", "18:48", "18:56", "19:05", "19:12", "19:20", "19:27", "19:36", "19:42", "19:50", "19:57", "20:04", "20:11", "20:19", "20:26", "20:33", "20:40", "20:48", "20:55", "21:03", "21:10", "21:18", "21:30", "21:42", "21:54", "22:03", "22:15", "22:30", "22:45", "23:11", "23:44"],
+        saturday: ["06:01", "06:29", "06:51", "07:01", "07:09", "07:17", "07:25", "07:33", "07:41", "07:49", "07:57", "08:06", "08:15", "08:23", "08:32", "08:41", "08:47", "08:52", "08:57", "09:06", "09:21", "09:36", "09:51", "10:06", "10:21", "10:36", "10:43", "10:51", "11:06", "11:21", "11:36", "11:51", "12:06", "12:21", "12:28", "12:36", "12:46", "12:56", "13:06", "13:21", "13:36", "13:51", "14:06", "14:21", "14:36", "14:51", "15:01", "15:11", "15:21", "15:36", "15:51", "16:06", "16:21", "16:31", "16:41", "16:51", "17:06", "17:21", "17:36", "17:51", "18:04", "18:11", "18:23", "18:35", "18:47", "18:59", "19:11", "19:23", "19:35", "19:47", "19:58", "20:10", "20:22", "20:34", "20:46", "20:58", "21:10", "21:22", "21:39", "21:56", "22:14", "22:34", "22:54", "23:14"],
+        holiday: ["06:01", "06:29", "06:51", "07:03", "07:15", "07:27", "07:37", "07:51", "08:03", "08:16", "08:28", "08:41", "08:53", "09:06", "09:21", "09:36", "09:51", "10:06", "10:21", "10:36", "10:51", "11:06", "11:21", "11:36", "11:51", "12:06", "12:21", "12:36", "12:51", "13:06", "13:21", "13:36", "13:51", "14:06", "14:21", "14:36", "14:51", "15:06", "15:21", "15:36", "15:51", "16:06", "16:21", "16:36", "16:51", "17:06", "17:21", "17:36", "17:51", "18:06", "18:21", "18:36", "18:51", "19:06", "19:21", "19:36", "19:50", "20:05", "20:20", "20:35", "20:50", "21:06", "21:22", "21:39", "21:56", "22:14", "22:34", "22:54", "23:14"]
+    },
+    mitaka: {
+        weekday: ["06:30", "06:50", "07:05", "07:20", "07:35", "07:50", "08:02", "08:15", "08:24", "08:32", "08:40", "08:46", "08:55", "09:02", "09:16", "09:26", "09:40", "09:54", "10:10", "10:21", "10:31", "10:41", "10:55", "11:08", "11:24", "11:38", "11:54", "12:09", "12:21", "12:34", "12:48", "12:59", "13:09", "13:22", "13:38", "13:50", "14:00", "14:09", "14:21", "14:32", "14:43", "14:57", "15:22", "15:32", "15:43", "16:01", "16:14", "16:21", "16:28", "16:38", "16:49", "17:00", "17:10", "17:22", "17:34", "17:51", "18:01", "18:08", "18:16", "18:30", "18:49", "19:04", "19:19", "19:39", "19:58", "20:19", "20:49", "21:09"],
+        saturday: ["07:05", "07:33", "07:53", "08:13", "08:29", "08:38", "08:46", "08:53", "08:59", "09:10", "09:25", "09:45", "10:05", "10:15", "10:26", "10:36", "10:46", "10:56", "11:06", "11:26", "11:46", "12:06", "12:22", "12:37", "12:47", "12:57", "13:07", "13:27", "13:46", "14:06", "14:18", "14:30", "14:42", "14:52", "15:02", "15:17", "15:32", "15:47", "16:10", "16:22", "16:32", "16:52", "17:10", "17:27", "17:52", "18:07", "18:23", "18:43", "19:02", "19:42", "20:07", "20:36", "21:06"],
+        holiday: ["07:05", "07:22", "07:42", "08:02", "08:22", "08:42", "09:01", "09:22", "09:42", "10:02", "10:22", "10:42", "11:02", "11:22", "11:42", "12:02", "12:22", "12:42", "13:02", "13:22", "13:42", "14:02", "14:22", "14:44", "15:06", "15:27", "15:47", "16:07", "16:27", "16:47", "17:07", "17:27", "17:47", "18:03", "18:22", "18:42", "19:02", "19:42", "20:07", "20:36", "21:06"]
+    }
+};
+
+function updateBusTimes() {
+    const dest = document.getElementById('destination-select').value;
+    const now = new Date();
+    const day = now.getDay(); 
+    // 時刻を数値に変換して比較しやすくする (例: 18:07 -> 1807)
+    const currentNum = now.getHours() * 100 + now.getMinutes();
+    
+    let schedule = (day === 0) ? data[dest].holiday : (day === 6 ? data[dest].saturday : data[dest].weekday);
+    const dayLabel = (day === 0) ? "日曜・祝日" : (day === 6 ? "土曜" : "平日");
+
+    // 時刻文字列を数値に変換して比較
+    const upcoming = schedule.filter(timeStr => {
+        const [h, m] = timeStr.split(':').map(Number);
+        return (h * 100 + m) > currentNum;
+    }).slice(0, 3);
+
+    const display = document.getElementById('bus-display');
+    display.innerHTML = '';
+    
+    if (upcoming.length === 0) {
+        display.innerHTML = '<li class="finished">本日の運行は終了しました</li>';
+    } else {
+        upcoming.forEach(time => {
+            const [h, m] = time.split(':').map(Number);
+            const busDate = new Date();
+            busDate.setHours(h, m, 0);
+            const diffMin = Math.floor((busDate - now) / 60000);
+            display.innerHTML += `
+                <li class="bus-item">
+                    <span class="time">${time}</span>
+                    <span class="countdown">あと ${diffMin} 分</span>
+                </li>
+            `;
+        });
+    }
+    const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+    document.getElementById('date-info').innerText = `現在: ${timeStr} (${dayLabel}ダイヤ)`;
+}
+
+// ページ読み込み時に実行
+updateBusTimes();
+// 定期的に更新
+setInterval(updateBusTimes, 10000);
+</script>
 </body>
 </html>
