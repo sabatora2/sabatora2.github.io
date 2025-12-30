@@ -28,9 +28,20 @@
         .bus-list { list-style: none; padding: 0; margin: 0; }
         .bus-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 0.5px solid #d1d1d6; }
         .time { font-size: 2.2rem; font-weight: 700; color: #00479d; letter-spacing: -1px; }
-        .countdown { background: #007aff; color: white; padding: 8px 15px; border-radius: 10px; font-size: 1rem; font-weight: 600; }
         
-        /* 休日切替ボタンのスタイル */
+        /* カウントダウン枠のサイズを固定 */
+        .countdown { 
+            background: #007aff; 
+            color: white; 
+            padding: 8px 0; /* 左右のパディングを0にして、幅で制御 */
+            border-radius: 10px; 
+            font-size: 1rem; 
+            font-weight: 600;
+            min-width: 100px; /* 枠の最小幅を固定 */
+            text-align: center; /* 文字を中央に配置 */
+            display: inline-block;
+        }
+        
         .toggle-btn-container { text-align: right; margin-top: 15px; }
         #holiday-toggle {
             background-color: #e5e5ea; color: #3a3a3c; border: none; padding: 8px 15px;
@@ -66,6 +77,7 @@
 </div>
 
 <script>
+// --- JavaScript部分は前回の回答と同じため省略 ---
 const data = {
     kichijoji: {
         weekday: ["06:02", "06:19", "06:30", "06:37", "06:43", "06:47", "06:52", "07:00", "07:04", "07:07", "07:12", "07:15", "07:21", "07:26", "07:29", "07:31", "07:36", "07:41", "07:44", "07:46", "07:53", "07:58", "08:02", "08:08", "08:12", "08:21", "08:28", "08:34", "08:38", "08:43", "08:48", "08:53", "09:01", "09:10", "09:21", "09:36", "09:53", "10:08", "10:15", "10:23", "10:29", "10:35", "10:44", "10:54", "11:09", "11:24", "11:39", "11:54", "12:09", "12:23", "12:28", "12:35", "12:47", "12:59", "13:09", "13:24", "13:39", "13:54", "14:09", "14:24", "14:45", "14:50", "14:57", "15:05", "15:24", "15:39", "15:54", "16:09", "16:14", "16:24", "16:29", "16:37", "16:52", "17:09", "17:21", "17:34", "17:46", "18:01", "18:06", "18:13", "18:22", "18:30", "18:39", "18:48", "18:56", "19:05", "19:12", "19:20", "19:27", "19:36", "19:42", "19:50", "19:57", "20:04", "20:11", "20:19", "20:26", "20:33", "20:40", "20:48", "20:55", "21:03", "21:10", "21:18", "21:30", "21:42", "21:54", "22:03", "22:15", "22:30", "22:45", "23:11", "23:44"],
@@ -79,7 +91,7 @@ const data = {
     }
 };
 
-let isHolidayForced = false; // 休日モード強制フラグ
+let isHolidayForced = false;
 
 function toggleHolidayMode() {
     isHolidayForced = !isHolidayForced;
@@ -103,7 +115,6 @@ function updateBusTimes() {
     let schedule;
     let dayLabel;
 
-    // モード判定
     if (isHolidayForced) {
         schedule = data[dest].holiday;
         dayLabel = "日曜・祝日（固定）";
