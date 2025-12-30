@@ -11,18 +11,12 @@
 
     <style>
         body { font-family: -apple-system, sans-serif; background-color: #f2f2f7; margin: 0; padding-top: env(safe-area-inset-top); display: flex; justify-content: center; }
-        .card { background: white; width: 100%; max-width: 400px; min-height: 100vh; padding: 0; box-sizing: border-box; }
+        .card { background: white; width: 100%; max-width: 400px; min-height: 100vh; padding: 0; box-sizing: border-box; position: relative; }
         
-        /* ヘッダーの角を丸くしない設定 */
-        .header { 
-            background-color: #00479d; 
-            padding: 20px; 
-            border-radius: 0; /* ここを0にすることで直角になります */
-        }
-        
+        .header { background-color: #00479d; padding: 20px; border-radius: 0; }
         h1 { font-size: 1.4rem; color: #ffffff; margin: 0 0 15px 0; text-align: center; }
         
-        .content-body { padding: 0 20px; }
+        .content-body { padding: 0 20px; position: relative; }
 
         .select-wrapper { position: relative; margin-bottom: 5px; }
         select {
@@ -30,11 +24,21 @@
             background-color: #fff; appearance: none; -webkit-appearance: none; font-weight: 600; color: #00479d;
         }
         .select-wrapper::after { content: '▼'; position: absolute; right: 15px; top: 15px; font-size: 0.8rem; color: #8e8e93; pointer-events: none; }
+        
         .bus-list { list-style: none; padding: 0; margin: 0; }
         .bus-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 0.5px solid #d1d1d6; }
         .time { font-size: 2.2rem; font-weight: 700; color: #00479d; letter-spacing: -1px; }
         .countdown { background: #007aff; color: white; padding: 8px 15px; border-radius: 10px; font-size: 1rem; font-weight: 600; }
-        .status { font-size: 0.8rem; color: #8e8e93; margin-top: 30px; text-align: center; padding-bottom: 20px; }
+        
+        /* 休日切替ボタンのスタイル */
+        .toggle-btn-container { text-align: right; margin-top: 15px; }
+        #holiday-toggle {
+            background-color: #e5e5ea; color: #3a3a3c; border: none; padding: 8px 15px;
+            border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.3s;
+        }
+        #holiday-toggle.active { background-color: #ff3b30; color: white; }
+
+        .status { font-size: 0.8rem; color: #8e8e93; margin-top: 15px; text-align: center; padding-bottom: 20px; }
         .finished { text-align: center; padding: 40px 0; color: #ff3b30; font-weight: bold; }
     </style>
 </head>
@@ -52,12 +56,16 @@
     </div>
     <div class="content-body">
         <ul id="bus-display" class="bus-list"></ul>
+        
+        <div class="toggle-btn-container">
+            <button id="holiday-toggle" onclick="toggleHolidayMode()">休日ダイヤに切替</button>
+        </div>
+
         <div id="date-info" class="status"></div>
     </div>
 </div>
 
 <script>
-// --- JavaScript部分は以前の回答と同じため省略（そのままお使いいただけます） ---
 const data = {
     kichijoji: {
         weekday: ["06:02", "06:19", "06:30", "06:37", "06:43", "06:47", "06:52", "07:00", "07:04", "07:07", "07:12", "07:15", "07:21", "07:26", "07:29", "07:31", "07:36", "07:41", "07:44", "07:46", "07:53", "07:58", "08:02", "08:08", "08:12", "08:21", "08:28", "08:34", "08:38", "08:43", "08:48", "08:53", "09:01", "09:10", "09:21", "09:36", "09:53", "10:08", "10:15", "10:23", "10:29", "10:35", "10:44", "10:54", "11:09", "11:24", "11:39", "11:54", "12:09", "12:23", "12:28", "12:35", "12:47", "12:59", "13:09", "13:24", "13:39", "13:54", "14:09", "14:24", "14:45", "14:50", "14:57", "15:05", "15:24", "15:39", "15:54", "16:09", "16:14", "16:24", "16:29", "16:37", "16:52", "17:09", "17:21", "17:34", "17:46", "18:01", "18:06", "18:13", "18:22", "18:30", "18:39", "18:48", "18:56", "19:05", "19:12", "19:20", "19:27", "19:36", "19:42", "19:50", "19:57", "20:04", "20:11", "20:19", "20:26", "20:33", "20:40", "20:48", "20:55", "21:03", "21:10", "21:18", "21:30", "21:42", "21:54", "22:03", "22:15", "22:30", "22:45", "23:11", "23:44"],
@@ -71,14 +79,38 @@ const data = {
     }
 };
 
+let isHolidayForced = false; // 休日モード強制フラグ
+
+function toggleHolidayMode() {
+    isHolidayForced = !isHolidayForced;
+    const btn = document.getElementById('holiday-toggle');
+    if (isHolidayForced) {
+        btn.innerText = "自動ダイヤに戻す";
+        btn.classList.add('active');
+    } else {
+        btn.innerText = "休日ダイヤに切替";
+        btn.classList.remove('active');
+    }
+    updateBusTimes();
+}
+
 function updateBusTimes() {
     const dest = document.getElementById('destination-select').value;
     const now = new Date();
     const day = now.getDay(); 
     const currentNum = now.getHours() * 100 + now.getMinutes();
     
-    let schedule = (day === 0) ? data[dest].holiday : (day === 6 ? data[dest].saturday : data[dest].weekday);
-    const dayLabel = (day === 0) ? "日曜・祝日" : (day === 6 ? "土曜" : "平日");
+    let schedule;
+    let dayLabel;
+
+    // モード判定
+    if (isHolidayForced) {
+        schedule = data[dest].holiday;
+        dayLabel = "日曜・祝日（固定）";
+    } else {
+        schedule = (day === 0) ? data[dest].holiday : (day === 6 ? data[dest].saturday : data[dest].weekday);
+        dayLabel = (day === 0) ? "日曜・祝日" : (day === 6 ? "土曜" : "平日");
+    }
 
     const upcoming = schedule.filter(timeStr => {
         const [h, m] = timeStr.split(':').map(Number);
@@ -107,6 +139,7 @@ function updateBusTimes() {
     const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
     document.getElementById('date-info').innerText = `現在: ${timeStr} (${dayLabel}ダイヤ)`;
 }
+
 updateBusTimes();
 setInterval(updateBusTimes, 10000);
 </script>
